@@ -135,6 +135,11 @@ class ListBullet extends AbstractRenderer
     {
         $style = $frame->get_style();
         $font_size = $style->font_size;
+
+        $font_family = $style->get_font_family();
+        $font_family_parts = explode('/', $font_family);
+        $font_family_name = end($font_family_parts);
+
         $line_height = (float)$style->length_in_pt($style->line_height, $frame->get_containing_block("h"));
 
         $this->_set_opacity($frame->get_opacity($style->opacity));
@@ -184,7 +189,12 @@ class ListBullet extends AbstractRenderer
                     // $y += ($font_size * (1 - ListBulletFrameDecorator::BULLET_DESCENT)) / 2;
                     $line = $li->get_containing_line();
                     $y = $line->y;
-                    $y += $font_size;
+                    if (in_array($font_family_name, ['Times-Roman', 'Times-Bold', 'Helvetica', 'Helvetica-Bold'])) {
+                        // Default Fonts:
+                        $y += ($font_size / 2);
+                    } else {
+                        $y += $font_size;
+                    }
                     $o = $font_size * ListBulletFrameDecorator::BULLET_THICKNESS;
                     $this->_canvas->circle($x, $y, $r, $style->color, $o, null, $fill);
                     break;
@@ -196,7 +206,12 @@ class ListBullet extends AbstractRenderer
                     // $y += ($font_size * (1 - ListBulletFrameDecorator::BULLET_DESCENT - ListBulletFrameDecorator::BULLET_SIZE)) / 2;
                     $line = $li->get_containing_line();
                     $y = $line->y;
-                    $y += $font_size;
+                    if (in_array($font_family_name, ['Times-Roman', 'Times-Bold', 'Helvetica', 'Helvetica-Bold'])) {
+                        // Default Fonts:
+                        $y += ($font_size / 2);
+                    } else {
+                        $y += $font_size;
+                    }
                     $this->_canvas->filled_rectangle($x, $y, $w, $w, $style->color);
                     break;
 
