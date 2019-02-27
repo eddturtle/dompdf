@@ -308,6 +308,12 @@ ol {
 
 li {
   display: list-item;
+  /* applies to text directly inside */
+  vertical-align: top;
+}
+li > * {
+  /* applies to elements like strong within the li */
+  vertical-align: top;
 }
 
 /*li:before {
