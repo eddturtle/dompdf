@@ -146,6 +146,13 @@ class ListBullet extends AbstractRenderer
             return;
         }
 
+        $isCustomFont = false;
+        if (!empty($style->font_family)) {
+            $fontParts = explode(DIRECTORY_SEPARATOR, $style->font_family);
+            $end = end($fontParts);
+            $isCustomFont = (strlen($end) === 32);
+        }
+
         // Handle list-style-image
         // If list style image is requested but missing, fall back to predefined types
         if ($style->list_style_image !== "none" && !Cache::is_broken($img = $frame->get_image_url())) {
@@ -181,10 +188,20 @@ class ListBullet extends AbstractRenderer
                     list($x, $y) = $frame->get_position();
                     $r = ($font_size * (ListBulletFrameDecorator::BULLET_SIZE /*-ListBulletFrameDecorator::BULLET_THICKNESS*/)) / 2;
                     $x -= $font_size * (ListBulletFrameDecorator::BULLET_SIZE / 2);
+
+                    // old-way
                     // $y += ($font_size * (1 - ListBulletFrameDecorator::BULLET_DESCENT)) / 2;
+
+                    // new-way
                     $line = $li->get_containing_line();
                     $y = $line->y;
                     $y += $font_size;
+
+                    // fix for non-custom fonts, bring back inline
+                    if (!$isCustomFont) {
+                        $y -= 4;
+                    }
+
                     $o = $font_size * ListBulletFrameDecorator::BULLET_THICKNESS;
                     $this->_canvas->circle($x, $y, $r, $style->color, $o, null, $fill);
                     break;
@@ -193,10 +210,23 @@ class ListBullet extends AbstractRenderer
                     list($x, $y) = $frame->get_position();
                     $w = $font_size * ListBulletFrameDecorator::BULLET_SIZE;
                     $x -= $w;
+
+                    // old-way
                     // $y += ($font_size * (1 - ListBulletFrameDecorator::BULLET_DESCENT - ListBulletFrameDecorator::BULLET_SIZE)) / 2;
+
+                    // new-way
                     $line = $li->get_containing_line();
                     $y = $line->y;
                     $y += $font_size;
+
+                    // fix for non-custom fonts, bring back inline
+                    if (!$isCustomFont) {
+                        $y -= 4;
+                    }
+
+                    // square only fix - bring inline
+                    $y -= 2;
+
                     $this->_canvas->filled_rectangle($x, $y, $w, $w, $style->color);
                     break;
 
