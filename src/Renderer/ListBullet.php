@@ -147,8 +147,9 @@ class ListBullet extends AbstractRenderer
         }
 
         $isCustomFont = false;
-        if (!empty($style->font_family)) {
-            $fontParts = explode(DIRECTORY_SEPARATOR, $style->font_family);
+        $fontFam = $style->font_family;
+        if (!empty($fontFam)) {
+            $fontParts = explode(DIRECTORY_SEPARATOR, $fontFam);
             $end = end($fontParts);
             $isCustomFont = (strlen($end) === 32);
         }
